@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = Number(process.env.PORT || 3000);
+const PORT = process.env.PORT;
 
 const AMADEUS_API_KEY = process.env.AMADEUS_API_KEY;
 const AMADEUS_API_SECRET = process.env.AMADEUS_API_SECRET;
@@ -201,5 +201,5 @@ app.get("/api/search-flights", async (req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`API rodando na porta ${PORT}`);
+  console.log("Server started on port " + PORT);
 });
