@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.json({ ok: true });
 });
@@ -11,9 +13,21 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+app.get("/api/search-flights", (req, res) => {
+  const { origin, destination, departureDate, returnDate } = req.query;
+
+  res.json({
+    message: "flight search placeholder",
+    origin,
+    destination,
+    departureDate,
+    returnDate
+  });
+});
+
 app.get("/openapi.json", (req, res) => {
   res.json({
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     info: {
       title: "Flight Hacker API",
       version: "1.0.0"
@@ -30,7 +44,19 @@ app.get("/openapi.json", (req, res) => {
           summary: "Health check",
           responses: {
             "200": {
-              description: "OK"
+              description: "API running",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      status: {
+                        type: "string"
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -44,24 +70,62 @@ app.get("/openapi.json", (req, res) => {
               name: "origin",
               in: "query",
               required: true,
-              schema: { type: "string" }
+              schema: {
+                type: "string"
+              }
             },
             {
               name: "destination",
               in: "query",
               required: true,
-              schema: { type: "string" }
+              schema: {
+                type: "string"
+              }
             },
             {
               name: "departureDate",
               in: "query",
               required: true,
-              schema: { type: "string" }
+              schema: {
+                type: "string"
+              }
+            },
+            {
+              name: "returnDate",
+              in: "query",
+              required: false,
+              schema: {
+                type: "string"
+              }
             }
           ],
           responses: {
             "200": {
-              description: "Flight results"
+              description: "Flight results",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      message: {
+                        type: "string"
+                      },
+                      origin: {
+                        type: "string"
+                      },
+                      destination: {
+                        type: "string"
+                      },
+                      departureDate: {
+                        type: "string"
+                      },
+                      returnDate: {
+                        type: "string"
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
