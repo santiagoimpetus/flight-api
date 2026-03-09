@@ -4,32 +4,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-  res.status(200).json({ ok: true, route: "/" });
+  res.json({ ok: true });
 });
 
 app.get("/health", (req, res) => {
-  res.status(200).json({ ok: true, route: "/health" });
-});
-
-app.get("/api/search-flights", (req, res) => {
-  const { origin, destination, departureDate, returnDate } = req.query;
-
-  if (!origin || !destination || !departureDate) {
-    return res.status(400).json({
-      error: "origin, destination e departureDate são obrigatórios"
-    });
-  }
-
-  res.status(200).json({
-    ok: true,
-    message: "Rota search-flights funcionando",
-    received: {
-      origin,
-      destination,
-      departureDate,
-      returnDate: returnDate || null
-    }
-  });
+  res.json({ status: "ok" });
 });
 
 app.get("/openapi.json", (req, res) => {
@@ -51,7 +30,7 @@ app.get("/openapi.json", (req, res) => {
           summary: "Health check",
           responses: {
             "200": {
-              description: "Server running"
+              description: "OK"
             }
           }
         }
@@ -78,20 +57,11 @@ app.get("/openapi.json", (req, res) => {
               in: "query",
               required: true,
               schema: { type: "string" }
-            },
-            {
-              name: "returnDate",
-              in: "query",
-              required: false,
-              schema: { type: "string" }
             }
           ],
           responses: {
             "200": {
               description: "Flight results"
-            },
-            "400": {
-              description: "Missing required parameters"
             }
           }
         }
@@ -101,5 +71,5 @@ app.get("/openapi.json", (req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("Server started on port " + PORT);
+  console.log("Server running on port " + PORT);
 });
