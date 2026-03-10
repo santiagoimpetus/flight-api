@@ -63,6 +63,7 @@ app.get("/health", (req, res) => {
 
 app.get("/api/search-flights", async (req, res) => {
   try {
+
     const { origin, destination, departureDate, returnDate } = req.query;
 
     if (!origin || !destination || !departureDate) {
@@ -73,31 +74,39 @@ app.get("/api/search-flights", async (req, res) => {
 
     const token = await getAccessToken();
 
+    const params = {
+      originLocationCode: origin,
+      destinationLocationCode: destination,
+      departureDate: departureDate,
+      adults: 1,
+      max: 10
+    };
+
+    if (returnDate) {
+      params.returnDate = returnDate;
+    }
+
     const response = await axios.get(
       `${BASE_URL}/v2/shopping/flight-offers`,
       {
         headers: {
           Authorization: `Bearer ${token}`
         },
-        params: {
-          originLocationCode: origin.toUpperCase(),
-          destinationLocationCode: destination.toUpperCase(),
-          departureDate,
-          returnDate,
-          adults: 1,
-          currencyCode: "USD",
-          max: 10
-        }
+        params: params
       }
     );
 
     res.json(response.data);
 
   } catch (error) {
+
+    console.log("AMADEUS ERROR:", error.response?.data || error.message);
+
     res.status(500).json({
       error: "flight search failed",
       details: error.response?.data || error.message
     });
+
   }
 });
 
