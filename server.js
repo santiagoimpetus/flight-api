@@ -53,7 +53,12 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({
+    status: "ok",
+    hasKey: !!process.env.AMADEUS_API_KEY,
+    hasSecret: !!process.env.AMADEUS_API_SECRET,
+    env: process.env.AMADEUS_ENV || null
+  });
 });
 
 app.get("/api/search-flights", async (req, res) => {
